@@ -1,19 +1,47 @@
-import { 
-  Box, Button, Checkbox, Flex, Heading, 
-  Icon, Table, Tbody, Td, Th, Thead, Tr, 
-  Text, useBreakpointValue, IconButton 
-} from "@chakra-ui/react";
+import { useEffect } from "react";
 import Link from "next/link";
-import { RiAddLine, RiPencilLine } from "react-icons/ri";
+import { useQuery } from 'react-query';
+
 import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
 
+import { 
+  Box, Button, Checkbox, Flex, Heading, 
+  Icon, Table, Tbody, Td, Th, Thead, Tr, 
+  Text, useBreakpointValue, IconButton, Spinner 
+} from "@chakra-ui/react";
+import { RiAddLine, RiPencilLine } from "react-icons/ri";
+
+
 export default function UserList () {
+  const { data, isLoading, error} = useQuery('users', async () => {
+    const response = await fetch('http://localhost:3000/api/users')
+    const data = await response.json()
+
+    const users = data.users.map(user => {
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        createdAt: new Date(user.createdAt).toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric',
+        })
+      }
+    });
+
+    return users;
+  }, {
+    staleTime: 1000 * 5 // 5 seconds of fresh query
+  })
+ 
   const isWiderVersion = useBreakpointValue({
     base: false,
     lg: true,
   })
+
 
   return(
     <Box>
@@ -37,158 +65,72 @@ export default function UserList () {
             </Link>
           </Flex>
           
-          <Table colorScheme="whiteAlpha">
-            <Thead>
-              <Tr>
-                <Th px={["4", "4", "6"]} color="gray.300" w="8">
-                  <Checkbox colorScheme="pink" />
-                </Th>
-                <Th>Usuário</Th>
-                { isWiderVersion && <Th>Data de cadastro</Th>}
-                <Th w="8"></Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Tr>
-                <Td px={["4", "4", "6"]}>
-                  <Checkbox colorScheme="pink" />
-                </Td>
-                <Td>
-                  <Box>
-                    <Text fontWeight="bold">Adrian Valdes</Text>
-                    <Text fontSize="sm" color="gray.300">adriangvaldes@gmail.com</Text>
-                  </Box>
-                </Td>
-                { isWiderVersion && <Td>9 de abril de 2021</Td>}
-                <Td>
-                  { isWiderVersion? 
-                    <Button 
-                      as="a" 
-                      size="sm" 
-                      fontSize="sm" 
-                      colorScheme="purple"
-                      leftIcon={<Icon as={ RiPencilLine } fontSize="20"/>}
-                    >
-                      Editar
-                    </Button> 
-                  :
-                    <IconButton 
-                      aria-label="Edit User" 
-                      colorScheme="purple" 
-                      icon={<Icon as={ RiPencilLine } 
-                        fontSize="20"
-                        />
-                      }
-                    />
-                  }
-                </Td>
-              </Tr>
-              <Tr>
-                <Td px={["4", "4", "6"]}>
-                  <Checkbox colorScheme="pink" />
-                </Td>
-                <Td>
-                  <Box>
-                    <Text fontWeight="bold">Antonio Vivaldi</Text>
-                    <Text fontSize="sm" color="gray.300">a.vivaldi@gmail.com</Text>
-                  </Box>
-                </Td>
-                { isWiderVersion && <Td>2 de abril de 2021</Td>}
-                <Td>
-                { isWiderVersion? 
-                    <Button 
-                      as="a" 
-                      size="sm" 
-                      fontSize="sm" 
-                      colorScheme="purple"
-                      leftIcon={<Icon as={ RiPencilLine } fontSize="20"/>}
-                    >
-                      Editar
-                    </Button> 
-                  :
-                    <IconButton 
-                      aria-label="Edit User" 
-                      colorScheme="purple" 
-                      icon={<Icon as={ RiPencilLine } 
-                        fontSize="20"
-                        />
-                      }
-                    />
-                  }
-                </Td>
-              </Tr>
-              <Tr>
-                <Td px={["4", "4", "6"]}>
-                  <Checkbox colorScheme="pink" />
-                </Td>
-                <Td>
-                  <Box>
-                    <Text fontWeight="bold">Marcela Lopes</Text>
-                    <Text fontSize="sm" color="gray.300">m.lopes.2001@gmail.com</Text>
-                  </Box>
-                </Td>
-                { isWiderVersion && <Td>5 de abril de 2021</Td>}
-                <Td>
-                { isWiderVersion? 
-                    <Button 
-                      as="a" 
-                      size="sm" 
-                      fontSize="sm" 
-                      colorScheme="purple"
-                      leftIcon={<Icon as={ RiPencilLine } fontSize="20"/>}
-                    >
-                      Editar
-                    </Button> 
-                  :
-                    <IconButton 
-                      aria-label="Edit User" 
-                      colorScheme="purple" 
-                      icon={<Icon as={ RiPencilLine } 
-                        fontSize="20"
-                        />
-                      }
-                    />
-                  }
-                </Td>
-              </Tr>
-              <Tr>
-                <Td px={["4", "4", "6"]}>
-                  <Checkbox colorScheme="pink" />
-                </Td>
-                <Td>
-                  <Box>
-                    <Text fontWeight="bold">Lílian Valverde</Text>
-                    <Text fontSize="sm" color="gray.300">lilian.valverde@gmail.com</Text>
-                  </Box>
-                </Td>
-                { isWiderVersion && <Td>8 de abril de 2021</Td>}
-                <Td>
-                { isWiderVersion? 
-                    <Button 
-                      as="a" 
-                      size="sm" 
-                      fontSize="sm" 
-                      colorScheme="purple"
-                      leftIcon={<Icon as={ RiPencilLine } fontSize="20"/>}
-                    >
-                      Editar
-                    </Button> 
-                  :
-                    <IconButton 
-                      aria-label="Edit User" 
-                      colorScheme="purple" 
-                      icon={<Icon as={ RiPencilLine } 
-                        fontSize="20"
-                        />
-                      }
-                    />
-                  }
-                </Td>
-              </Tr>
-            </Tbody>
-          </Table>
+          { isLoading ? (
+            <Flex justify="center">
+              <Spinner />
+            </Flex>
+          ) : error ? (
+            <Flex justify="center">
+              <Text>Falha ao obter os dados dos usuários</Text>
+            </Flex>
+          ) : (
+            <>
+            <Table colorScheme="whiteAlpha">
+              <Thead>
+                <Tr>
+                  <Th px={["4", "4", "6"]} color="gray.300" w="8">
+                    <Checkbox colorScheme="pink" />
+                  </Th>
+                  <Th>Usuário</Th>
+                  { isWiderVersion && <Th>Data de cadastro</Th>}
+                  <Th w="8"></Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data.map(user => {
+                  return (
+                    <Tr key={user.id}>
+                      <Td px={["4", "4", "6"]}>
+                        <Checkbox colorScheme="pink" />
+                      </Td>
+                      <Td>
+                        <Box>
+                          <Text fontWeight="bold">{user.name}</Text>
+                          <Text fontSize="sm" color="gray.300">{user.email}</Text>
+                        </Box>
+                      </Td>
+                      { isWiderVersion && <Td>{user.createdAt}</Td>}
+                      <Td>
+                        { isWiderVersion? 
+                          <Button 
+                            as="a" 
+                            size="sm" 
+                            fontSize="sm" 
+                            colorScheme="purple"
+                            leftIcon={<Icon as={ RiPencilLine } fontSize="20"/>}
+                          >
+                            Editar
+                          </Button> 
+                        :
+                          <IconButton 
+                            aria-label="Edit User" 
+                            colorScheme="purple" 
+                            icon={<Icon as={ RiPencilLine } 
+                              fontSize="20"
+                              />
+                            }
+                          />
+                        }
+                      </Td>
+                    </Tr>
+                  )
+                })}
+              </Tbody>
+            </Table>
 
-          <Pagination />
+            <Pagination />
+            </>
+          )}
         </Box>
       </Flex>
     </Box>
