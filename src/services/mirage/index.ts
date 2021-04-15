@@ -1,4 +1,4 @@
-import { createServer, Factory, Model, Response } from 'miragejs';
+import { createServer, Factory, Model, Response, ActiveModelSerializer } from 'miragejs';
 import faker from 'faker';
 
 type User = {  //Usyn type to prevent the type's merging
@@ -9,6 +9,10 @@ type User = {  //Usyn type to prevent the type's merging
 
 export function makeServer() {
   const server = createServer({
+    serializers: {
+      aplication: ActiveModelSerializer,
+    },
+    
     models: {
       user: Model.extend<Partial<User>>({})  // Partial is used to define that some item of User can be blank
     },
@@ -53,6 +57,7 @@ export function makeServer() {
         )
       });
       
+      this.get('/users/:id');
       this.post('/users');
 
       this.namespace = ''; //Resetting namespace to prevent conflicts with next's api
